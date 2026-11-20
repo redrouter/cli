@@ -1,19 +1,55 @@
 {
   "name": "@redrouter/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Set up Claude Code, Codex, OpenCode and Pi with RedRouter",
   "type": "module",
   "license": "MIT",
   "author": "RedRouter",
-  "repository": { "type": "git", "url": "https://github.com/redrouter/cli.git" },
-  "homepage": "https://redrouter.org/docs",
-  "bin": { "redrouter": "bin/redrouter.mjs" },
-  "exports": { ".": "./plugins/opencode.mjs", "./pi": "./plugins/pi.mjs" },
-  "files": ["bin", "src", "plugins", "LICENSE", "README.md"],
-  "engines": { "node": ">=20.11" },
-  "scripts": { "test": "node --test test/*.test.mjs" },
-  "dependencies": { "jsonc-parser": "3.3.1", "smol-toml": "1.9.1" },
-  "publishConfig": { "access": "public" },
-  "keywords": ["redrouter", "opencode-plugin", "pi-package", "codex", "claude-code"],
-  "pi": { "extensions": ["./plugins/pi.mjs"] }
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/redrouter/cli.git"
+  },
+  "homepage": "https://docs.redrouter.org/integrations",
+  "bin": {
+    "redrouter": "bin/redrouter.mjs"
+  },
+  "exports": {
+    ".": "./plugins/opencode.mjs",
+    "./pi": "./plugins/pi.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "plugins",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "dependencies": {
+    "jsonc-parser": "3.3.1",
+    "smol-toml": "1.9.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "redrouter",
+    "opencode-plugin",
+    "pi-package",
+    "codex",
+    "claude-code"
+  ],
+  "pi": {
+    "extensions": [
+      "./plugins/pi.mjs"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/redrouter/cli/issues"
+  }
 }

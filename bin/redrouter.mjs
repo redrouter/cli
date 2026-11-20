@@ -6,7 +6,7 @@ import { plan, apply } from '../src/config.mjs';
 
 async function main() {
   const { values, positionals } = parseArgs({ allowPositionals: true, options: { tools: { type: 'string', default: 'claude,codex,opencode,pi' }, model: { type: 'string', default: DEFAULT_MODEL }, 'dry-run': { type: 'boolean' }, 'skip-test': { type: 'boolean' }, help: { type: 'boolean', short: 'h' }, version: { type: 'boolean' } } });
-  if (values.version) { console.log('0.1.0'); return; }
+  if (values.version) { console.log('0.1.1'); return; }
   if (values.help || !positionals.length) {
     console.log('Usage: redrouter init [--tools claude,codex,opencode,pi] [--model ID] [--dry-run] [--skip-test]\n\nExport REDROUTER_API_KEY from https://redrouter.org/keys first.\nInit merges user config, installs OpenCode/Pi plugins, backs up changed files,\nand makes one short, billable test generation using the first selected tool\'s protocol.\n--dry-run lists files without writing or generating. --skip-test only configures.\nAgent tools must be installed separately. Start Codex with: codex --profile redrouter');
     return;

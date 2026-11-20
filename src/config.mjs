@@ -68,7 +68,7 @@ export async function plan({ home, env = process.env, tools, model, models }) {
     const jsonc = join(dir, 'opencode.jsonc');
     const path = await read(jsonc) !== null ? jsonc : join(dir, 'opencode.json');
     const plugin = pathToFileURL(join(bundle, 'plugins/opencode.mjs')).href;
-    await add(path, source => jsonEdit(source, [[['provider', 'redrouter'], opencodeProvider(models)], [['model'], `redrouter/${model}`], [['plugin'], appendEntry(source, 'plugin', plugin)]]));
+    await add(path, source => jsonEdit(source, [[['provider', 'redrouter'], opencodeProvider(models)], [['model'], `redrouter/${model}`], [['small_model'], `redrouter/${model}`], [['plugin'], appendEntry(source, 'plugin', plugin)]]));
   }
   if (tools.includes('pi')) {
     const dir = env.PI_CODING_AGENT_DIR || join(home, '.pi', 'agent');

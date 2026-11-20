@@ -1,6 +1,7 @@
 import { readFile, writeFile, mkdir, rename, lstat, unlink } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 import { parse, modify, applyEdits } from 'jsonc-parser';
 import { parse as parseToml } from 'smol-toml';
 import { ORIGIN, piModel, opencodeProvider } from './api.mjs';
@@ -24,6 +25,12 @@ function jsonEdit(source, updates) {
   return result.endsWith('\n') ? result : `${result}\n`;
 }
 
+function appendEntry(source, key, entry) {
+  const entries = parse(source || '{}')[key] ?? [];
+  if (!Array.isArray(entries)) throw new Error(`${key} must be an array.`);
+  return [...new Set([...entries, entry])];
+}
+
 function codexConfig(source, model) {
   const value = parseToml(source || '');
   const start = source?.indexOf(BEGIN) ?? -1;
@@ -38,6 +45,7 @@ function codexConfig(source, model) {
 
 export async function plan({ home, env = process.env, tools, model, models }) {
   const changes = [];
+  const bundle = join(env.XDG_CONFIG_HOME || join(home, '.config'), 'redrouter', 'integrations');
   async function add(path, edit) {
     const before = await read(path);
     try { changes.push({ path, before, after: edit(before) }); }
@@ -59,12 +67,20 @@ export async function plan({ home, env = process.env, tools, model, models }) {
     const dir = env.OPENCODE_CONFIG_DIR || join(env.XDG_CONFIG_HOME || join(home, '.config'), 'opencode');
     const jsonc = join(dir, 'opencode.jsonc');
     const path = await read(jsonc) !== null ? jsonc : join(dir, 'opencode.json');
-    await add(path, source => jsonEdit(source, [[['provider', 'redrouter'], opencodeProvider(models)], [['model'], `redrouter/${model}`]]));
+    const plugin = pathToFileURL(join(bundle, 'plugins/opencode.mjs')).href;
+    await add(path, source => jsonEdit(source, [[['provider', 'redrouter'], opencodeProvider(models)], [['model'], `redrouter/${model}`], [['plugin'], appendEntry(source, 'plugin', plugin)]]));
   }
   if (tools.includes('pi')) {
     const dir = env.PI_CODING_AGENT_DIR || join(home, '.pi', 'agent');
     await add(join(dir, 'models.json'), source => jsonEdit(source, [[['providers', 'redrouter'], { baseUrl: `${ORIGIN}/v1`, api: 'openai-completions', apiKey: '$REDROUTER_API_KEY', models: models.map(piModel) }]]));
-    await add(join(dir, 'settings.json'), source => jsonEdit(source, [[['defaultProvider'], 'redrouter'], [['defaultModel'], model]]));
+    await add(join(dir, 'settings.json'), source => jsonEdit(source, [[['defaultProvider'], 'redrouter'], [['defaultModel'], model], [['extensions'], appendEntry(source, 'extensions', join(bundle, 'plugins/pi.mjs'))]]));
+  }
+  if (tools.includes('pi') || tools.includes('opencode')) {
+    const files = ['src/api.mjs', ...(tools.includes('pi') ? ['plugins/pi.mjs'] : []), ...(tools.includes('opencode') ? ['plugins/opencode.mjs'] : [])];
+    for (const file of files) {
+      const content = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+      await add(join(bundle, file), () => content);
+    }
   }
   return changes.filter(c => c.before !== c.after);
 }

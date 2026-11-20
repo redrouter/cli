@@ -23,17 +23,17 @@ Config locations: `~/.claude/settings.json`, `~/.codex/redrouter.config.toml`, `
 
 ## Plugins
 
-The installer supplies static model metadata; these optional plugins load current model metadata at startup instead. Both need `REDROUTER_API_KEY` in the agent's environment. They send no prompts or credentials during catalog discovery.
+Init also installs the OpenCode and Pi plugins for selected tools, using stable local copies under `~/.config/redrouter/integrations`. Both need `REDROUTER_API_KEY` in the agent's environment. They send no prompts or credentials during catalog discovery. User-configured model overrides take precedence over discovered metadata.
 
-OpenCode **1.x**: add the Git package to your existing `plugin` array:
+OpenCode **1.x**:
 
-```json
-{ "plugin": ["github:redrouter/cli#v0.1.0"] }
+```sh
+npx github:redrouter/cli#v0.1.0 init --tools opencode
 ```
 
-Select `redrouter/red-cyber-1`. This plugin uses the 1.x `config` hook; OpenCode 2.x uses a different plugin API.
+Select `redrouter/red-cyber-1`. Init appends a local file URL to your existing `plugin` array. This avoids Git-package loader differences across OpenCode releases. This plugin uses the 1.x `config` hook; OpenCode 2.x uses a different plugin API.
 
-Pi:
+Pi is also installed by init. To install just its plugin through Pi's package manager:
 
 ```sh
 pi install git:github.com/redrouter/cli@v0.1.0

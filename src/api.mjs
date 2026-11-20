@@ -63,7 +63,7 @@ export function piModel(m) {
     id: m.id, name: m.display_name, reasoning: false,
     input: m.capabilities.image_input ? ['text', 'image'] : ['text'],
     cost: { input: Number(m.pricing.input_usd_per_mtok), output: Number(m.pricing.output_usd_per_mtok), cacheRead: Number(m.pricing.cached_input_usd_per_mtok), cacheWrite: 0 },
-    contextWindow: m.context_tokens, maxTokens: m.max_output_tokens,
+    contextWindow: m.context_tokens, maxTokens: Math.min(m.max_output_tokens, 8192),
     compat: { supportsStore: false },
   };
 }

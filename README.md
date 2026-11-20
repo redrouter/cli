@@ -9,7 +9,7 @@ npx github:redrouter/cli#v0.1.0 init
 
 Get a key at [redrouter.org/keys](https://redrouter.org/keys). The unscoped npm name `redrouter` belongs to an unrelated project. Once published to npm, use `npx @redrouter/cli init`.
 
-Init reads the current public catalog, merges user settings, and verifies Messages for Claude Code, Responses for Codex, and Chat Completions for OpenCode/Pi before saving. Each distinct protocol uses one generation capped at 64 output tokens (up to three generations), charged to your trial or credits. Failed tests leave configs unchanged. These API probes verify credentials and protocols; agent versions and their tools can introduce additional compatibility requirements. OpenCode starts with an 8,192-token output cap so the initial request fits the free trial and avoids reserving the model's full output maximum.
+Init reads the current public catalog, merges user settings, and verifies Messages for Claude Code, Responses for Codex, and Chat Completions for OpenCode/Pi before saving. Each distinct protocol uses one generation capped at 64 output tokens (up to three generations), charged to your trial or credits. Failed tests leave configs unchanged. These API probes verify credentials and protocols; agent versions and their tools can introduce additional compatibility requirements. OpenCode and Pi start with an 8,192-token output cap so the initial request fits the free trial and avoids reserving the model's full output maximum.
 
 ```sh
 npx github:redrouter/cli#v0.1.0 init --dry-run
